@@ -46,14 +46,14 @@ impl IdxStore {
   pub fn search_tokenize(&self, hans: String) -> String {
     let space = " ";
     let hans = hans
-        .replace("-", space)
-        .replace("+", space)
-        .replace(",", space)
-        .replace(".", space)
-        .replace(":", space)
-        .replace("/", space)
-        .replace("\\", space)
-        .replace("_", space);
+      .replace("-", space)
+      .replace("+", space)
+      .replace(",", space)
+      .replace(".", space)
+      .replace(":", space)
+      .replace("/", space)
+      .replace("\\", space)
+      .replace("_", space);
 
     if is_ascii_alphanumeric(hans.as_str()) {
       return self.ascii_tokenize(hans);
@@ -157,8 +157,6 @@ impl IdxStore {
     is_dir_opt: Option<bool>,
     ext_opt: Option<String>,
   ) -> SearchResult {
-    let searcher = self.reader.searcher();
-
     let tokens = self.search_tokenize(kw.clone());
     let kw_query = self.query_parser.parse_query(&tokens).ok().unwrap();
     let mut subqueries = vec![(Occur::Must, kw_query)];
@@ -186,6 +184,7 @@ impl IdxStore {
 
     let q = BooleanQuery::new(subqueries);
 
+    let searcher = self.reader.searcher();
     let top_docs = searcher
       .search(&q, &TopDocs::with_limit(limit))
       .ok()
@@ -394,7 +393,7 @@ impl IdxStore {
     query_parser.set_field_boost(name_field, 4.0f32);
     let mut jieba = Jieba::new();
     // it's a feature
-    jieba.add_word("陈奕迅", None, None);
+    // jieba.add_word("陈奕迅", None, None);
     IdxStore {
       writer,
       reader,
